@@ -1,0 +1,10 @@
+QMenuBar { background-color: #333333; color: white;}
+QMenuBar::item:selected { background: #808080 }
+QGroupBox { color: white; }
+QLabel { color: white; }
+QLabel::disabled { color: #626262; }
+QLineEdit { border: 2px; }
+QLineEdit::disabled
+{
+    background: #626262;
+}

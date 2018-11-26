@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>stylesheet.qss</file>
+        <file>Oswald-Light.ttf</file>
+    </qresource>
+</RCC>
