@@ -1,2 +1,2 @@
 # PathfinderGUI
-A GUI for the Pathfinder library written in Qt Widgets
+A GUI for the <a href=https://github.com/JacisNonsense/Pathfinder>Pathfinder library</a> written in Qt Widgets.
