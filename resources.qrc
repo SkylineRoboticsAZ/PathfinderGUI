@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>stylesheet.qss</file>
         <file>Oswald-Light.ttf</file>
+        <file>icons/binary-file.png</file>
+        <file>icons/csv-file.png</file>
     </qresource>
 </RCC>

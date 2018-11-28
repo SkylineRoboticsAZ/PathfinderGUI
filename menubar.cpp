@@ -2,11 +2,15 @@
 
 MenuBar::MenuBar()
 {
+    setFocusPolicy(Qt::ClickFocus);
 
-}
+    exportMenu_ = new QMenu(QStringLiteral("Export"), this);
 
-void MenuBar::mousePressEvent(QMouseEvent *event)
-{
-    qDebug() << "Clicked!";
-    //QApplication::focusWidget()->clearFocus();
+    exportBinaryAction_ = new QAction(QStringLiteral("Export to Binary File"), exportMenu_);
+    exportCsvAction_ = new QAction(QStringLiteral("Export to CSV File"), exportMenu_);
+
+    exportMenu_->addAction(exportBinaryAction_);
+    exportMenu_->addAction(exportCsvAction_);
+
+    addMenu(exportMenu_);
 }

@@ -7,6 +7,8 @@ UserInput::UserInput(QWidget *parent) : QWidget(parent), fieldValidator_(new QDo
     setAutoFillBackground(true);
     setPalette(palette);
 
+    setFocusPolicy(Qt::ClickFocus);
+
     fieldValidator_->setBottom(0);
     fieldValidator_->setDecimals(5);
 
@@ -16,11 +18,6 @@ UserInput::UserInput(QWidget *parent) : QWidget(parent), fieldValidator_(new QDo
     mainLayout->addStretch();
 
     updateDisabledRobotFields(trajectoryTypeBox_->currentIndex());
-}
-
-void UserInput::mousePressEvent(QMouseEvent *event)
-{
-    QApplication::focusWidget()->clearFocus();
 }
 
 void UserInput::updateDisabledRobotFields(int index)

@@ -4,6 +4,9 @@
 #include <QMenuBar>
 #include <QApplication>
 #include <QDebug>
+#include <QMenu>
+#include <QAction>
+#include <QMouseEvent>
 
 class MenuBar : public QMenuBar
 {
@@ -11,7 +14,10 @@ class MenuBar : public QMenuBar
 public:
     MenuBar();
 
-    void mousePressEvent(QMouseEvent *event) override;
+private:
+    QMenu *exportMenu_;
+    QAction *exportBinaryAction_,
+            *exportCsvAction_;
 };
 
 #endif // MENUBAR_H

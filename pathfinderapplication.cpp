@@ -39,6 +39,4 @@ void PathfinderApplication::loadStylesheet()
 
 void PathfinderApplication::configureMenuBar()
 {
-    menuBar_->addMenu(QStringLiteral("Export"));
-    menuBar_->addMenu(QStringLiteral("About"));
 }
