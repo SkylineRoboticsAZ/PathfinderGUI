@@ -18,6 +18,11 @@ UserInput::UserInput(QWidget *parent) : QWidget(parent), fieldValidator_(new QDo
     updateDisabledRobotFields(trajectoryTypeBox_->currentIndex());
 }
 
+void UserInput::mousePressEvent(QMouseEvent *event)
+{
+    QApplication::focusWidget()->clearFocus();
+}
+
 void UserInput::updateDisabledRobotFields(int index)
 {
     bool wheelbaseWidthDisabled, wheelbaseDepthDisabled;

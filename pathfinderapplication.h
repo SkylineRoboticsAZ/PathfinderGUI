@@ -4,9 +4,9 @@
 #include <QApplication>
 #include <QFile>
 #include <QFontDatabase>
-#include <QMenuBar>
 
 #include "mainwindow.h"
+#include "menubar.h"
 
 class PathfinderApplication : public QApplication
 {

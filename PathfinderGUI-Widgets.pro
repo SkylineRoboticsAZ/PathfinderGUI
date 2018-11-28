@@ -30,14 +30,16 @@ SOURCES += \
     UserInput/customfield.cpp \
     UserInput/userinput.cpp \
     GraphViewport/graphviewport.cpp \
-    pathfinderapplication.cpp
+    pathfinderapplication.cpp \
+    menubar.cpp
 
 HEADERS += \
         mainwindow.h \
     UserInput/customfield.h \
     UserInput/userinput.h \
     GraphViewport/graphviewport.h \
-    pathfinderapplication.h
+    pathfinderapplication.h \
+    menubar.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

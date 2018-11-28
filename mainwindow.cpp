@@ -19,8 +19,3 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(centralWidget);
 }
-
-MainWindow::~MainWindow()
-{
-
-}

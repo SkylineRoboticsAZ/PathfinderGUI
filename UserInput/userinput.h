@@ -10,12 +10,15 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QDoubleValidator>
+#include <QApplication>
 
 class UserInput : public QWidget
 {
     Q_OBJECT
 public:
     explicit UserInput(QWidget *parent = nullptr);
+
+    void mousePressEvent(QMouseEvent *event) override;
 
 signals:
     /* 0 = Tank
