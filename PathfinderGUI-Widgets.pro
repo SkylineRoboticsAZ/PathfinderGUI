@@ -31,7 +31,8 @@ SOURCES += \
     UserInput/userinput.cpp \
     GraphViewport/graphviewport.cpp \
     pathfinderapplication.cpp \
-    menubar.cpp
+    menubar.cpp \
+    UserInput/lineedit.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     UserInput/userinput.h \
     GraphViewport/graphviewport.h \
     pathfinderapplication.h \
-    menubar.h
+    menubar.h \
+    UserInput/lineedit.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

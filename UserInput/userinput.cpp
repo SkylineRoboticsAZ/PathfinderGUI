@@ -20,6 +20,46 @@ UserInput::UserInput(QWidget *parent) : QWidget(parent), fieldValidator_(new QDo
     updateDisabledRobotFields(trajectoryTypeBox_->currentIndex());
 }
 
+double UserInput::fieldWidth() const
+{
+    return fieldWidthField_->text().toDouble();
+}
+
+double UserInput::fieldLength() const
+{
+    return fieldLengthField_->text().toDouble();
+}
+
+int UserInput::trajectoryType() const
+{
+    return trajectoryTypeBox_->currentIndex();
+}
+
+double UserInput::wheelbaseWidth() const
+{
+    return wheelbaseWidthField_->text().toDouble();
+}
+
+double UserInput::wheelbaseDepth() const
+{
+    return wheelbaseDepthField_->text().toDouble();
+}
+
+double UserInput::maxVelocity() const
+{
+    return maxVelocityField_->text().toDouble();
+}
+
+double UserInput::maxAcceleration() const
+{
+    return maxAccelerationField_->text().toDouble();
+}
+
+double UserInput::maxJerk() const
+{
+    return maxJerkField_->text().toDouble();
+}
+
 void UserInput::updateDisabledRobotFields(int index)
 {
     bool wheelbaseWidthDisabled, wheelbaseDepthDisabled;
@@ -50,13 +90,26 @@ void UserInput::updateDisabledRobotFields(int index)
     wheelbaseDepthField_->setDisabled(wheelbaseDepthDisabled);
 }
 
+void UserInput::setTempVar(double value)
+{
+    tempValue_ = value;
+}
+
 QWidget *UserInput::getFieldParametersGroupBox()
 {
     QLabel *fieldHeightLabel = new QLabel(QStringLiteral("Field Length:"));
 
     fieldLengthField_ = new QLineEdit();
     fieldLengthField_->setValidator(fieldValidator_);
-
+    connect(fieldLengthField_, &QLineEdit::editingFinished,
+            this, [=]()
+    {
+        if (fieldLengthField_->isModified()) {
+            emit fieldLengthChanged(fieldLength());
+            fieldLengthField_->setModified(false);
+        }
+    });
+    connect(this, &UserInput::fieldLengthChanged, [=](double length){ qDebug() << length; });
     QLabel *fieldWidthLabel = new QLabel(QStringLiteral("Field Width:"));
 
     fieldWidthField_ = new QLineEdit();
