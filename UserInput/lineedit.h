@@ -2,6 +2,10 @@
 #define LINEEDIT_H
 
 #include <QLineEdit>
+#include <QValidator>
+#include <QKeyEvent>
+#include <QFocusEvent>
+#include <QDebug>
 
 class LineEdit : public QLineEdit
 {
@@ -10,6 +14,14 @@ public:
     LineEdit();
 
 signals:
+    void userChangedText(QString oldText, QString newText);
+
+private:
+    QString textCache_;
+
+    void editingFinished();
+    void keyPressEvent(QKeyEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 };
 
 #endif // LINEEDIT_H

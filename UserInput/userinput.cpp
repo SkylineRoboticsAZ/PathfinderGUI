@@ -1,9 +1,9 @@
 #include "userinput.h"
 
-UserInput::UserInput(QWidget *parent) : QWidget(parent), fieldValidator_(new QDoubleValidator(this))
+UserInput::UserInput(QWidget *parent) : QTabWidget(parent), fieldValidator_(new QDoubleValidator(this))
 {
     QPalette palette = QPalette();
-    palette.setColor(QPalette::Background, QColor(QStringLiteral("#434343")));
+    palette.setColor(QPalette::Window, QColor(QStringLiteral("#434343")));
     setAutoFillBackground(true);
     setPalette(palette);
 
@@ -12,52 +12,23 @@ UserInput::UserInput(QWidget *parent) : QWidget(parent), fieldValidator_(new QDo
     fieldValidator_->setBottom(0);
     fieldValidator_->setDecimals(5);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addWidget(getFieldParametersGroupBox());
     mainLayout->addWidget(getRobotParametersGroupBox());
+    mainLayout->addWidget(getTrajectoryParametersGroupBox());
     mainLayout->addStretch();
 
+    QWidget *parametersWidget = new QWidget();
+    parametersWidget->setLayout(mainLayout);
+    parametersWidget->setPalette(palette);
+    parametersWidget->setAutoFillBackground(true);
+
+    QWidget *waypointsWidget = new QWidget();
+
+    addTab(parametersWidget, QStringLiteral("Parameters"));
+    addTab(waypointsWidget, QStringLiteral("Waypoints"));
+
     updateDisabledRobotFields(trajectoryTypeBox_->currentIndex());
-}
-
-double UserInput::fieldWidth() const
-{
-    return fieldWidthField_->text().toDouble();
-}
-
-double UserInput::fieldLength() const
-{
-    return fieldLengthField_->text().toDouble();
-}
-
-int UserInput::trajectoryType() const
-{
-    return trajectoryTypeBox_->currentIndex();
-}
-
-double UserInput::wheelbaseWidth() const
-{
-    return wheelbaseWidthField_->text().toDouble();
-}
-
-double UserInput::wheelbaseDepth() const
-{
-    return wheelbaseDepthField_->text().toDouble();
-}
-
-double UserInput::maxVelocity() const
-{
-    return maxVelocityField_->text().toDouble();
-}
-
-double UserInput::maxAcceleration() const
-{
-    return maxAccelerationField_->text().toDouble();
-}
-
-double UserInput::maxJerk() const
-{
-    return maxJerkField_->text().toDouble();
 }
 
 void UserInput::updateDisabledRobotFields(int index)
@@ -90,30 +61,24 @@ void UserInput::updateDisabledRobotFields(int index)
     wheelbaseDepthField_->setDisabled(wheelbaseDepthDisabled);
 }
 
-void UserInput::setTempVar(double value)
+void UserInput::configureLineEdit(LineEdit *lineEdit)
 {
-    tempValue_ = value;
+    lineEdit->setValidator(fieldValidator_);
+    lineEdit->setMaxLength(15);
+    lineEdit->setPlaceholderText(QStringLiteral("Enter a value"));
 }
 
 QWidget *UserInput::getFieldParametersGroupBox()
 {
     QLabel *fieldHeightLabel = new QLabel(QStringLiteral("Field Length:"));
 
-    fieldLengthField_ = new QLineEdit();
-    fieldLengthField_->setValidator(fieldValidator_);
-    connect(fieldLengthField_, &QLineEdit::editingFinished,
-            this, [=]()
-    {
-        if (fieldLengthField_->isModified()) {
-            emit fieldLengthChanged(fieldLength());
-            fieldLengthField_->setModified(false);
-        }
-    });
-    connect(this, &UserInput::fieldLengthChanged, [=](double length){ qDebug() << length; });
+    fieldLengthField_ = new LineEdit();
+    configureLineEdit(fieldLengthField_);
+
     QLabel *fieldWidthLabel = new QLabel(QStringLiteral("Field Width:"));
 
-    fieldWidthField_ = new QLineEdit();
-    fieldWidthField_->setValidator(fieldValidator_);
+    fieldWidthField_ = new LineEdit();
+    configureLineEdit(fieldWidthField_);
 
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(fieldHeightLabel, 0, 0);
@@ -132,18 +97,18 @@ QWidget *UserInput::getRobotParametersGroupBox()
 {
     QLabel *maxVelocityLabel = new QLabel(QStringLiteral("Max Velocity (dx/dt):"));
 
-    maxVelocityField_ = new QLineEdit();
-    maxVelocityField_->setValidator(fieldValidator_);
+    maxVelocityField_ = new LineEdit();
+    configureLineEdit(maxVelocityField_);
 
     QLabel *maxAccelerationLabel = new QLabel(QStringLiteral("Max Acceleration (dv/dt):"));
 
-    maxAccelerationField_ = new QLineEdit();
-    maxAccelerationField_->setValidator(fieldValidator_);
+    maxAccelerationField_ = new LineEdit();
+    configureLineEdit(maxAccelerationField_);
 
     QLabel *maxJerkLabel = new QLabel(QStringLiteral("Max Jerk (da/dt):"));
 
-    maxJerkField_ = new QLineEdit();
-    maxJerkField_->setValidator(fieldValidator_);
+    maxJerkField_ = new LineEdit();
+    configureLineEdit(maxJerkField_);
 
     QLabel *trajectoryTypeLabel = new QLabel(QStringLiteral("Trajectory Type:"));
 
@@ -151,18 +116,16 @@ QWidget *UserInput::getRobotParametersGroupBox()
     trajectoryTypeBox_->addItems({"Tank", "Swerve", "Basic"});
     connect(trajectoryTypeBox_, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &UserInput::updateDisabledRobotFields);
-    connect(trajectoryTypeBox_, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &UserInput::trajectoryTypeChanged);
 
     wheelbaseWidthLabel_ = new QLabel(QStringLiteral("Wheelbase Width:"));
 
-    wheelbaseWidthField_ = new QLineEdit();
-    wheelbaseWidthField_->setValidator(fieldValidator_);
+    wheelbaseWidthField_ = new LineEdit();
+    configureLineEdit(wheelbaseWidthField_);
 
     wheelbaseDepthLabel_ = new QLabel(QStringLiteral("Wheelbase Depth:"));
 
-    wheelbaseDepthField_ = new QLineEdit();
-    wheelbaseDepthField_->setValidator(fieldValidator_);
+    wheelbaseDepthField_ = new LineEdit();
+    configureLineEdit(wheelbaseDepthField_);
 
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(maxVelocityLabel, 0, 0);
@@ -180,6 +143,38 @@ QWidget *UserInput::getRobotParametersGroupBox()
 
     QGroupBox *group = new QGroupBox();
     group->setTitle(QStringLiteral("Robot Parameters"));
+    group->setLayout(layout);
+
+    return group;
+}
+
+QWidget *UserInput::getTrajectoryParametersGroupBox()
+{
+    QLabel *functionTypeLabel = new QLabel(QStringLiteral("Function Type:"));
+
+    functionTypeBox_ = new QComboBox();
+    functionTypeBox_->addItems({"Cubic", "Quintic"});
+
+    QLabel *sampleCountLabel = new QLabel(QStringLiteral("Sample Count:"));
+
+    sampleCountBox_ = new QComboBox();
+    sampleCountBox_->addItems({"Fast (1k)", "Low (10k)", "High (100k)"});
+
+    QLabel *timeStepLabel = new QLabel(QStringLiteral("Time Step:"));
+
+    timeStepField_ = new LineEdit();
+    configureLineEdit(timeStepField_);
+
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(functionTypeLabel, 0, 0);
+    layout->addWidget(functionTypeBox_, 0, 1);
+    layout->addWidget(sampleCountLabel, 1, 0);
+    layout->addWidget(sampleCountBox_, 1, 1);
+    layout->addWidget(timeStepLabel, 2, 0);
+    layout->addWidget(timeStepField_, 2, 1);
+
+    QGroupBox *group = new QGroupBox();
+    group->setTitle(QStringLiteral("Trajectory Parameters"));
     group->setLayout(layout);
 
     return group;

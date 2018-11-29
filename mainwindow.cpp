@@ -18,4 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
     graphViewport_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     setCentralWidget(centralWidget);
+
+    setFocus();
 }
