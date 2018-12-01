@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QDebug>
 
 #include "UserInput/userinput.h"
 #include "GraphViewport/graphviewport.h"

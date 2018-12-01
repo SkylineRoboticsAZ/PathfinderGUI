@@ -12,6 +12,10 @@ UserInput::UserInput(QWidget *parent) : QTabWidget(parent), fieldValidator_(new 
     fieldValidator_->setBottom(0);
     fieldValidator_->setDecimals(5);
 
+    TabBar *tabBar = new TabBar();
+    setTabBar(tabBar);
+    tabBar->setGeometry(0, 0, width(), 50);
+
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addWidget(getFieldParametersGroupBox());
     mainLayout->addWidget(getRobotParametersGroupBox());

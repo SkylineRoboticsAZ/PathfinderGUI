@@ -3,6 +3,7 @@
 PathfinderApplication::PathfinderApplication(int &argc, char **argv) :
     QApplication(argc, argv)
 {
+    setStyle(QStringLiteral("Windowsvista"));
     loadAppFont();
     loadStylesheet();
 

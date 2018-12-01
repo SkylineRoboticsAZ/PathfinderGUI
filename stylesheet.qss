@@ -8,14 +8,13 @@ QLineEdit::disabled
 {
     background: #626262;
 }
-QTabWidget::pane { border-top: 0px; }
-QTabWidget::tab-bar { alignment: center; }
+QTabWidget::pane { border: none; }
 QTabBar::tab
 {
     background: black;
     color: white;
-    padding: 10px;
-    border: 2px solid transparent
+    border: 2px solid transparent;
+    margin-top: 0px;
 }
 QTabBar::tab:selected {
     border-bottom-color: white;

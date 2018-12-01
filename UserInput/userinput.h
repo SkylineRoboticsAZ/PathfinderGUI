@@ -12,6 +12,7 @@
 #include <QApplication>
 #include <QTabWidget>
 
+#include "tabbar.h"
 #include "lineedit.h"
 
 class UserInput : public QTabWidget
