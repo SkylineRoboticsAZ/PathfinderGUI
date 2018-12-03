@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent)
     centralLayout->addWidget(input_);
     centralLayout->addWidget(graphViewport_, 1);
 
+    input_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    input_->setMaximumWidth(400);
+
     setCentralWidget(centralWidget);
 
     setFocus();

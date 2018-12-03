@@ -10,7 +10,6 @@ UserInput::UserInput(QWidget *parent) : QTabWidget(parent), fieldValidator_(new 
     setFocusPolicy(Qt::ClickFocus);
 
     fieldValidator_->setBottom(0);
-    fieldValidator_->setDecimals(5);
 
     TabBar *tabBar = new TabBar();
     setTabBar(tabBar);
@@ -24,14 +23,23 @@ UserInput::UserInput(QWidget *parent) : QTabWidget(parent), fieldValidator_(new 
 
     QWidget *parametersWidget = new QWidget();
     parametersWidget->setLayout(mainLayout);
-    parametersWidget->setPalette(palette);
-    parametersWidget->setAutoFillBackground(true);
+
+    QVBoxLayout *tableLayout = new QVBoxLayout();
+    tableLayout->addWidget(getWaypointTable());
 
     QWidget *waypointsWidget = new QWidget();
+    waypointsWidget->setLayout(tableLayout);
+    waypointsWidget->setContentsMargins(5, 5, 5, 5);
 
     addTab(parametersWidget, QStringLiteral("Parameters"));
     addTab(waypointsWidget, QStringLiteral("Waypoints"));
 
+    connect(fieldWidthField_, &LineEdit::userChangedText, this,
+            [=](QString oldText, QString newText)
+    { Q_UNUSED(oldText); waypointTableDelegate_->setYRange(0, newText.toDouble()); });
+    connect(fieldLengthField_, &LineEdit::userChangedText, this,
+            [=](QString oldText, QString newText)
+    { Q_UNUSED(oldText); waypointTableDelegate_->setXRange(0, newText.toDouble()); });
     updateDisabledRobotFields(trajectoryTypeBox_->currentIndex());
 }
 
@@ -182,4 +190,17 @@ QWidget *UserInput::getTrajectoryParametersGroupBox()
     group->setLayout(layout);
 
     return group;
+}
+
+QTableView *UserInput::getWaypointTable()
+{
+    waypointTableModel_ = new WaypointTableModel(10, 3, this);
+
+    waypointTableDelegate_ = new WaypointTableDelegate(waypointTableModel_, this);
+
+    waypointTableView_ = new QTableView();
+    waypointTableView_->setModel(waypointTableModel_);
+    waypointTableView_->setItemDelegate(waypointTableDelegate_);
+
+    return waypointTableView_;
 }

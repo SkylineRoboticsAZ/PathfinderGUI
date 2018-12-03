@@ -27,23 +27,27 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    UserInput/customfield.cpp \
     UserInput/userinput.cpp \
     GraphViewport/graphviewport.cpp \
     pathfinderapplication.cpp \
     menubar.cpp \
     UserInput/lineedit.cpp \
-    UserInput/tabbar.cpp
+    UserInput/tabbar.cpp \
+    UserInput/waypointtabledelegate.cpp \
+    UserInput/waypointtablemodel.cpp \
+    UserInput/waypointtableview.cpp
 
 HEADERS += \
         mainwindow.h \
-    UserInput/customfield.h \
     UserInput/userinput.h \
     GraphViewport/graphviewport.h \
     pathfinderapplication.h \
     menubar.h \
     UserInput/lineedit.h \
-    UserInput/tabbar.h
+    UserInput/tabbar.h \
+    UserInput/waypointtabledelegate.h \
+    UserInput/waypointtablemodel.h \
+    UserInput/waypointtableview.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

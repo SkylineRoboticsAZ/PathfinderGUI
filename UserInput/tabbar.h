@@ -7,7 +7,7 @@
 class TabBar : public QTabBar
 {
 public:
-    TabBar();
+    TabBar(QWidget *parent = nullptr);
 
     QSize tabSizeHint(int index) const override;
 };

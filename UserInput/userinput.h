@@ -11,9 +11,15 @@
 #include <QDoubleValidator>
 #include <QApplication>
 #include <QTabWidget>
+#include <QTableView>
 
 #include "tabbar.h"
 #include "lineedit.h"
+#include "waypointtabledelegate.h"
+#include "waypointtablemodel.h"
+
+using WaypointTable::WaypointTableDelegate;
+using WaypointTable::WaypointTableModel;
 
 class UserInput : public QTabWidget
 {
@@ -42,10 +48,15 @@ private:
               *sampleCountBox_;
     LineEdit *timeStepField_;
 
+    QTableView *waypointTableView_;
+    WaypointTableDelegate *waypointTableDelegate_;
+    WaypointTableModel *waypointTableModel_;
+
     void configureLineEdit(LineEdit *lineEdit);
     QWidget *getFieldParametersGroupBox();
     QWidget *getRobotParametersGroupBox();
     QWidget *getTrajectoryParametersGroupBox();
+    QTableView *getWaypointTable();
 };
 
 #endif // USERINPUT_H

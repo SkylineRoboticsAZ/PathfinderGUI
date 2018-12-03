@@ -11,7 +11,8 @@ class LineEdit : public QLineEdit
 {
     Q_OBJECT
 public:
-    LineEdit();
+    LineEdit(QWidget *parent = nullptr);
+    LineEdit(const QString &contents, QWidget *parent = nullptr);
 
 signals:
     void userChangedText(QString oldText, QString newText);
