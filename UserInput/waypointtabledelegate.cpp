@@ -20,15 +20,6 @@ QWidget *WaypointTableDelegate::createEditor(QWidget *parent, const QStyleOption
 
     QLineEdit *editor = new QLineEdit(parent);
 
-    if (model_->rowCount() - 1 == index.row()) {
-        auto conn = std::make_shared<QMetaObject::Connection>();
-        *conn = connect(editor, &QLineEdit::textEdited, this, [this, conn]()
-        {
-            model_->appendRow(new QStandardItem);
-            disconnect(*conn);
-        });
-    }
-
     switch(index.column()) {
     case 0:
         editor->setValidator(xValidator_);

@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QDoubleValidator>
 #include <QDebug>
+#include <memory>
 
 #include "waypointtablemodel.h"
 

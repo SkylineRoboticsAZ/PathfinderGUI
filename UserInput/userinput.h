@@ -12,6 +12,8 @@
 #include <QApplication>
 #include <QTabWidget>
 #include <QTableView>
+#include <QPushButton>
+#include <QItemSelectionModel>
 
 #include "tabbar.h"
 #include "lineedit.h"
@@ -47,6 +49,10 @@ private:
     QComboBox *functionTypeBox_,
               *sampleCountBox_;
     LineEdit *timeStepField_;
+
+    QPushButton *tableAddRowButton_,
+                *tableRemoveRowButton_,
+                *tableClearButton_;
 
     QTableView *waypointTableView_;
     WaypointTableDelegate *waypointTableDelegate_;

@@ -24,8 +24,17 @@ UserInput::UserInput(QWidget *parent) : QTabWidget(parent), fieldValidator_(new 
     QWidget *parametersWidget = new QWidget();
     parametersWidget->setLayout(mainLayout);
 
-    QVBoxLayout *tableLayout = new QVBoxLayout();
-    tableLayout->addWidget(getWaypointTable());
+    QGridLayout *tableLayout = new QGridLayout();
+
+    //Add code for the table buttons
+    tableAddRowButton_ = new QPushButton(QStringLiteral("Add Row"));
+    tableRemoveRowButton_ = new QPushButton(QStringLiteral("Remove Row"));
+    tableClearButton_ = new QPushButton(QStringLiteral("Clear Table"));
+
+    tableLayout->addWidget(tableAddRowButton_, 0, 0);
+    tableLayout->addWidget(tableRemoveRowButton_, 0, 1);
+    tableLayout->addWidget(tableClearButton_, 0, 2);
+    tableLayout->addWidget(getWaypointTable(), 1, 0, 1, 3);
 
     QWidget *waypointsWidget = new QWidget();
     waypointsWidget->setLayout(tableLayout);
@@ -41,6 +50,17 @@ UserInput::UserInput(QWidget *parent) : QTabWidget(parent), fieldValidator_(new 
             [=](QString oldText, QString newText)
     { Q_UNUSED(oldText); waypointTableDelegate_->setXRange(0, newText.toDouble()); });
     updateDisabledRobotFields(trajectoryTypeBox_->currentIndex());
+
+    connect(tableAddRowButton_, &QPushButton::clicked, waypointTableModel_,
+            [=](){ waypointTableModel_->appendRow(new QStandardItem); });
+    connect(tableRemoveRowButton_, &QPushButton::clicked, waypointTableModel_,
+            [=]()
+    {
+        QItemSelectionModel *model = waypointTableView_->selectionModel();
+        if (model->hasSelection()) {
+            waypointTableModel_->removeRow(model->selectedRows().front().row());
+        }
+    });
 }
 
 void UserInput::updateDisabledRobotFields(int index)
@@ -201,6 +221,8 @@ QTableView *UserInput::getWaypointTable()
     waypointTableView_ = new QTableView();
     waypointTableView_->setModel(waypointTableModel_);
     waypointTableView_->setItemDelegate(waypointTableDelegate_);
+    waypointTableView_->setSelectionBehavior(QAbstractItemView::SelectRows);
+    waypointTableView_->setSelectionMode(QAbstractItemView::SingleSelection);
 
     return waypointTableView_;
 }
