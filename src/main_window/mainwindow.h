@@ -6,8 +6,8 @@
 #include <QHBoxLayout>
 #include <QDebug>
 
-#include "UserInput/userinput.h"
-#include "GraphViewport/graphviewport.h"
+#include "user_input/userinput.h"
+#include "graph_viewport/graphviewport.h"
 
 class MainWindow : public QMainWindow
 {

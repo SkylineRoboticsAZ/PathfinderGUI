@@ -10,7 +10,7 @@ LineEdit::LineEdit(const QString &contents, QWidget *parent) : QLineEdit(content
 
 void LineEdit::editingFinished()
 {
-    const QString &newText = text();
+    const QString newText = text();
 
     if (textCache_ != newText) {
         const QString oldText = textCache_;

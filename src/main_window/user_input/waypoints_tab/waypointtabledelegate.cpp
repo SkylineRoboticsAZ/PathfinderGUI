@@ -1,11 +1,8 @@
 #include "waypointtabledelegate.h"
 
-namespace WaypointTable
-{
-
-WaypointTableDelegate::WaypointTableDelegate(WaypointTableModel *model, QObject *parent) :
-    QStyledItemDelegate(parent), model_(model),
-    xValidator_(new QDoubleValidator(this)), yValidator_(new QDoubleValidator(this)),
+WaypointTableDelegate::WaypointTableDelegate(QObject *parent) :
+    QStyledItemDelegate(parent), xValidator_(new QDoubleValidator(this)),
+    yValidator_(new QDoubleValidator(this)),
     angleValidator_(new QDoubleValidator(this))
 {
     xValidator_->setRange(0, 0);
@@ -64,25 +61,34 @@ void WaypointTableDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
 void WaypointTableDelegate::setXRange(double min, double max)
 {
     xValidator_->setRange(min, max);
-
-
 }
 
 void WaypointTableDelegate::setYRange(double min, double max)
 {
     yValidator_->setRange(min, max);
-
-
 }
 
+QDoubleValidator *WaypointTableDelegate::xValidator() const
+{
+    return xValidator_;
 }
 
-void WaypointTable::WaypointTableDelegate::initStyleOption(QStyleOptionViewItem *option,
+QDoubleValidator *WaypointTableDelegate::yValidator() const
+{
+    return yValidator_;
+}
+
+QDoubleValidator *WaypointTableDelegate::angleValidator() const
+{
+    return angleValidator_;
+}
+
+void WaypointTableDelegate::initStyleOption(QStyleOptionViewItem *option,
                                                            const QModelIndex &index) const
 {
     QStyledItemDelegate::initStyleOption(option, index);
 
-    QBrush backgroundBrush;
+    /*QBrush backgroundBrush;
 
     if (index.column() <= 1) {
         QString value = index.model()->data(index, Qt::EditRole).toString();
@@ -106,5 +112,5 @@ void WaypointTable::WaypointTableDelegate::initStyleOption(QStyleOptionViewItem 
         backgroundBrush = QColor("white");
     }
 
-    option->backgroundBrush = backgroundBrush;
+    option->backgroundBrush = backgroundBrush;*/
 }

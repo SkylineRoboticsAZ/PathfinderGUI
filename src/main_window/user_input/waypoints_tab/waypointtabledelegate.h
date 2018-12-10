@@ -7,16 +7,11 @@
 #include <QDebug>
 #include <memory>
 
-#include "waypointtablemodel.h"
-
-namespace WaypointTable
-{
-
 class WaypointTableDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    WaypointTableDelegate(WaypointTableModel *model, QObject *parent = nullptr);
+    WaypointTableDelegate(QObject *parent = nullptr);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override;
@@ -27,19 +22,20 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const override;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
 
-    void setXRange(double min, double max);
-    void setYRange(double min, double max);
+    void setXRange(double bottom, double top);
+    void setYRange(double bottom, double top);
+
+    QDoubleValidator *xValidator() const;
+    QDoubleValidator *yValidator() const;
+    QDoubleValidator *angleValidator() const;
 
 protected:
     void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override;
 
 private:
-    WaypointTableModel *model_;
     QDoubleValidator *xValidator_,
                      *yValidator_,
                      *angleValidator_;
 };
-
-}
 
 #endif // WAYPOINTTABLEDELEGATE_H

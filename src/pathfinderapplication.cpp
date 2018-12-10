@@ -7,10 +7,9 @@ PathfinderApplication::PathfinderApplication(int &argc, char **argv) :
     loadAppFont();
     loadStylesheet();
 
-    menuBar_ = new MenuBar();
     configureMenuBar();
 
-    window_.setMenuBar(menuBar_);
+    window_.setMenuBar(&menuBar_);
     window_.resize(1024, 600);
     window_.show();
 }

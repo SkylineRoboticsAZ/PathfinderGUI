@@ -5,17 +5,18 @@
 #include <QFile>
 #include <QFontDatabase>
 
-#include "mainwindow.h"
-#include "menubar.h"
+#include "main_window/mainwindow.h"
+#include "main_window/menubar.h"
 
 class PathfinderApplication : public QApplication
 {
 public:
     PathfinderApplication(int &argc, char **argv);
+    virtual ~PathfinderApplication() {}
 
 private:
     MainWindow window_;
-    QMenuBar *menuBar_;
+    MenuBar menuBar_;
 
     void loadAppFont();
     void loadStylesheet();

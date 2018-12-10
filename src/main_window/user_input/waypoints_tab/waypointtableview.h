@@ -3,9 +3,6 @@
 
 #include <QTableView>
 
-namespace WaypointTable
-{
-
 class WaypointTableView : public QTableView
 {
     Q_OBJECT
@@ -14,7 +11,5 @@ public:
 
 
 };
-
-}
 
 #endif // WAYPOINTTABLE_H

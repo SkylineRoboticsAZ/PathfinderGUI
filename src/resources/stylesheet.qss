@@ -19,3 +19,14 @@ QTabBar::tab
 QTabBar::tab:selected {
     border-bottom-color: white;
 }
+QTableView {
+    color: white;
+    background: #242425;
+    gridline-color: white;
+    selection-background-color: gray;
+}
+QHeaderView::section
+{
+    color: white;
+    background-color: black;
+}
