@@ -53,7 +53,8 @@ HEADERS += \
     main_window/user_input/paremeters_tab/parameterstab.h \
     main_window/user_input/paremeters_tab/controls/lineedit.h \
     main_window/user_input/waypoints_tab/waypointstab.h \
-    main_window/user_input/waypoints_tab/waypointtablewidget.h
+    main_window/user_input/waypoints_tab/waypointtablewidget.h \
+    main_window/user_input/waypoints_tab/roles.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

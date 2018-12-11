@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <memory>
 
+#include "roles.h"
+
 class WaypointTableDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -36,6 +38,8 @@ private:
     QDoubleValidator *xValidator_,
                      *yValidator_,
                      *angleValidator_;
+
+    QBrush normalBrush_, invalidBrush_;
 };
 
 #endif // WAYPOINTTABLEDELEGATE_H

@@ -3,7 +3,8 @@
 WaypointTableDelegate::WaypointTableDelegate(QObject *parent) :
     QStyledItemDelegate(parent), xValidator_(new QDoubleValidator(this)),
     yValidator_(new QDoubleValidator(this)),
-    angleValidator_(new QDoubleValidator(this))
+    angleValidator_(new QDoubleValidator(this)),
+    normalBrush_(QColor(QStringLiteral("#242425"))), invalidBrush_(Qt::red)
 {
     xValidator_->setRange(0, 0);
     yValidator_->setRange(0, 0);
@@ -87,6 +88,9 @@ void WaypointTableDelegate::initStyleOption(QStyleOptionViewItem *option,
                                                            const QModelIndex &index) const
 {
     QStyledItemDelegate::initStyleOption(option, index);
+
+    if (index.data(WaypointTableRoles::InvalidValue).toBool())
+        option->backgroundBrush = invalidBrush_;
 
     /*QBrush backgroundBrush;
 

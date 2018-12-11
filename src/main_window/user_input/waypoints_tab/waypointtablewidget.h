@@ -5,13 +5,19 @@
 #include <QStandardItemModel>
 #include <Qt>
 #include <QHeaderView>
+#include <QVector>
 
 #include "waypointtabledelegate.h"
+#include "roles.h"
 
 class WaypointTableWidget : public QTableView
 {
     Q_OBJECT
 public:
+    struct DataPoint {
+        QString x, y, angle;
+    };
+
     explicit WaypointTableWidget(QWidget *parent = nullptr);
 
     void appendRow();
@@ -21,7 +27,11 @@ public:
     void setXRange(double bottom, double top);
     void setYRange(double bottom, double top);
 
+    QVector<DataPoint> getCurrentData() const;
+
 signals:
+    void validDataAvailable(QVector<DataPoint> data);
+    void dataInvalidated();
 
 private slots:
     void dataChanged(const QModelIndex &topLeft,
@@ -32,7 +42,7 @@ private:
     QStandardItemModel model_;
     WaypointTableDelegate delegate_;
 
-    QBrush normalBrush_, invalidBrush_;
+    void runValidDataCheck();
 };
 
 #endif // WAYPOINTTABLEWIDGET_H

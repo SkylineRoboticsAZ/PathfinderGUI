@@ -24,9 +24,29 @@ QTableView {
     background: #242425;
     gridline-color: white;
     selection-background-color: gray;
+    border: 1px solid white;
 }
+QTableCornerButton::section {
+    background-color: #242425;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent white white transparent;
+}
+QHeaderView { background-color: #242425; }
 QHeaderView::section
 {
     color: white;
-    background-color: black;
+    background-color: #242425;
+}
+QHeaderView::section::horizontal
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent white white transparent;
+}
+QHeaderView::section::vertical
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent white white transparent;
 }
