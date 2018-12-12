@@ -28,6 +28,7 @@ public:
     void setYRange(double bottom, double top);
 
     QVector<DataPoint> getCurrentData() const;
+    bool isDataValid() const;
 
 signals:
     void validDataAvailable(QVector<DataPoint> data);
@@ -41,7 +42,10 @@ private slots:
 private:
     QStandardItemModel model_;
     WaypointTableDelegate delegate_;
+    bool isDataValid_ = false;
 
+    void setDataValiditity(bool isValid);
+    void setRangeHelper(bool isXRange, double bottom, double top);
     void runValidDataCheck();
 };
 

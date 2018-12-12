@@ -39,7 +39,8 @@ private:
                      *yValidator_,
                      *angleValidator_;
 
-    QBrush normalBrush_, invalidBrush_;
+    QBrush normalBrush_, invalidBrush_, invalidHighlightBrush_,
+    incompleteBrush_, incompleteHighlightBrush_;
 };
 
 #endif // WAYPOINTTABLEDELEGATE_H

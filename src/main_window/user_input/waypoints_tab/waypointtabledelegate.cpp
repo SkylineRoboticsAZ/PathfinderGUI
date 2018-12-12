@@ -4,7 +4,9 @@ WaypointTableDelegate::WaypointTableDelegate(QObject *parent) :
     QStyledItemDelegate(parent), xValidator_(new QDoubleValidator(this)),
     yValidator_(new QDoubleValidator(this)),
     angleValidator_(new QDoubleValidator(this)),
-    normalBrush_(QColor(QStringLiteral("#242425"))), invalidBrush_(Qt::red)
+    normalBrush_(QColor(QStringLiteral("#242425"))), invalidBrush_(QColor(QStringLiteral("#921212"))),
+    invalidHighlightBrush_(Qt::red), incompleteBrush_(QColor(QStringLiteral("#925e12"))),
+    incompleteHighlightBrush_(QColor(QStringLiteral("#ff9900")))
 {
     xValidator_->setRange(0, 0);
     yValidator_->setRange(0, 0);
@@ -89,32 +91,44 @@ void WaypointTableDelegate::initStyleOption(QStyleOptionViewItem *option,
 {
     QStyledItemDelegate::initStyleOption(option, index);
 
-    if (index.data(WaypointTableRoles::InvalidValue).toBool())
+    if (index.data(WaypointTableRoles::InvalidValue).toBool()) {
         option->backgroundBrush = invalidBrush_;
+        option->palette.setBrush(QPalette::Highlight, invalidHighlightBrush_);
+        //option->palette.setBrush(QPalette::Text, QBrush(Qt::black));
+        option->text = tr("Invalid: ") + option->text;
+    } else {
+        if (index.data().toString().isEmpty()) {
+            bool isEntireRowEmpty = true;
 
-    /*QBrush backgroundBrush;
+            int otherCells[2];
 
-    if (index.column() <= 1) {
-        QString value = index.model()->data(index, Qt::EditRole).toString();
-
-        if (index.column() == 0) {
-            if (QValidator::Acceptable == xValidator_->
-                    validate(value, *(static_cast<int*>(nullptr)))) {
-                backgroundBrush = QColor("white");
-            } else {
-                backgroundBrush = QColor("red");
+            switch (index.column()) {
+            case 0:
+                otherCells[0] = 1;
+                otherCells[1] = 2;
+                break;
+            case 1:
+                otherCells[0] = 0;
+                otherCells[1] = 2;
+                break;
+            case 2:
+                otherCells[0] = 0;
+                otherCells[1] = 1;
+                break;
             }
-        } else {
-            if (QValidator::Acceptable == yValidator_->
-                    validate(value, *(static_cast<int*>(nullptr)))) {
-                backgroundBrush = QColor("white");
-            } else {
-                backgroundBrush = QColor("red");
+
+            for (int column : otherCells) {
+                if (!index.model()->
+                        index(index.row(), column).data().toString().isEmpty())
+                    isEntireRowEmpty = false;
+            }
+
+            if (!isEntireRowEmpty) {
+                option->backgroundBrush = incompleteBrush_;
+                option->palette.setBrush(QPalette::Highlight, incompleteHighlightBrush_);
+                //option->palette.setBrush(QPalette::Text, QBrush(Qt::black));
+                option->text = tr("Incomplete");
             }
         }
-    } else {
-        backgroundBrush = QColor("white");
     }
-
-    option->backgroundBrush = backgroundBrush;*/
 }

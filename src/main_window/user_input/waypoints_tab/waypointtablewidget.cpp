@@ -22,7 +22,6 @@ WaypointTableWidget::WaypointTableWidget(QWidget *parent) : QTableView(parent),
     vertical->setSectionsMovable(false);
     vertical->setSectionsClickable(false);
 
-    connect(&model_, &QAbstractItemModel::dataChanged, this, &WaypointTableWidget::dataChanged);
     connect(this, &WaypointTableWidget::validDataAvailable,
             this, [=](QVector<DataPoint> data)
     {
@@ -48,57 +47,25 @@ void WaypointTableWidget::removeSelectedRow()
     QItemSelectionModel *selection = selectionModel();
     if (selection->hasSelection())
         model_.removeRow(selection->selectedRows().first().row());
+
+    runValidDataCheck();
 }
 
 void WaypointTableWidget::removeAllRows()
 {
     model_.removeRows(0, model_.rowCount());
+
+    setDataValiditity(false);
 }
 
 void WaypointTableWidget::setXRange(double bottom, double top)
 {
-    delegate_.setXRange(bottom, top);
-
-    for (int i = 0; i < model_.rowCount(); i++) {
-        QModelIndex index = model_.index(i, 0);
-        QString cellData = model_.data(index).toString();
-
-        if (!cellData.isEmpty()) {
-            //the parameter i is not used, but required
-            QValidator::State result = delegate_.xValidator()->validate(cellData, i);
-
-            const bool isInvalid = index.data(WaypointTableRoles::InvalidValue).toBool();
-            const bool isAcceptable = result == QValidator::Acceptable;
-
-            if (isInvalid && isAcceptable)
-                model_.setData(index, false, WaypointTableRoles::InvalidValue);
-            else if (!isInvalid && !isAcceptable)
-                model_.setData(index, true, WaypointTableRoles::InvalidValue);
-        }
-    }
+    setRangeHelper(true, bottom, top);
 }
 
 void WaypointTableWidget::setYRange(double bottom, double top)
 {
-    delegate_.setYRange(bottom, top);
-
-    for (int i = 0; i < model_.rowCount(); i++) {
-        QModelIndex index = model_.index(i, 1);
-        QString cellData = model_.data(index).toString();
-
-        if (!cellData.isEmpty()) {
-            //the parameter i is not used, but required
-            QValidator::State result = delegate_.yValidator()->validate(cellData, i);
-
-            const bool isInvalid = index.data(WaypointTableRoles::InvalidValue).toBool();
-            const bool isAcceptable = result == QValidator::Acceptable;
-
-            if (isInvalid && isAcceptable)
-                model_.setData(index, false, WaypointTableRoles::InvalidValue);
-            else if (!isInvalid && !isAcceptable)
-                model_.setData(index, true, WaypointTableRoles::InvalidValue);
-        }
-    }
+    setRangeHelper(false, bottom, top);
 }
 
 QVector<WaypointTableWidget::DataPoint> WaypointTableWidget::getCurrentData() const
@@ -118,42 +85,118 @@ QVector<WaypointTableWidget::DataPoint> WaypointTableWidget::getCurrentData() co
     return dataPoints;
 }
 
+bool WaypointTableWidget::isDataValid() const
+{
+    return isDataValid_;
+}
+
 void WaypointTableWidget::dataChanged(const QModelIndex &topLeft,
                                       const QModelIndex &bottomRight,
                                       const QVector<int> &roles)
 {
     Q_UNUSED(bottomRight);
 
-    if (roles.contains(Qt::EditRole) &&
-            topLeft.data(WaypointTableRoles::InvalidValue).toBool()) {
-        model_.setData(topLeft, false, WaypointTableRoles::InvalidValue);
-    } else if (roles.contains(WaypointTableRoles::InvalidValue)) {
-        if (topLeft.data(WaypointTableRoles::InvalidValue).toBool()) {
+    if (roles.contains(Qt::EditRole)) {
+        const bool isInvalid = topLeft.data(WaypointTableRoles::InvalidValue).toBool();
+
+        if (isInvalid)
+            model_.setData(topLeft, false, WaypointTableRoles::InvalidValue);
+
+        // There is no way a user can invalidate the table by editing
+        // due to input regulations set in the delegate
+        // Therefore, we must only check if the table is valid after edits
+        runValidDataCheck();
+    }
+}
+
+void WaypointTableWidget::setDataValiditity(bool isValid)
+{
+    if (isDataValid_ != isValid) {
+        isDataValid_ = isValid;
+
+        if (!isDataValid_)
             emit dataInvalidated();
-            return;
+    }
+
+    if (isDataValid_)
+        emit validDataAvailable(getCurrentData());
+}
+
+void WaypointTableWidget::setRangeHelper(bool isXRange, double bottom, double top)
+{
+    if (isXRange)
+        delegate_.setXRange(bottom, top);
+    else
+        delegate_.setYRange(bottom, top);
+
+    bool wasDataInvalidated = false;
+    bool wasDataValidated = false;
+
+    for (int i = 0; i < model_.rowCount(); i++) {
+        QModelIndex index = model_.index(i, (isXRange ? 0 : 1));
+        QString cellData = model_.data(index).toString();
+
+        if (!cellData.isEmpty()) {
+            //the parameter i is not used, but required
+            QValidator::State result = isXRange ? delegate_.xValidator()->validate(cellData, i) :
+                                                  delegate_.yValidator()->validate(cellData, i);
+
+            const bool isInvalid = index.data(WaypointTableRoles::InvalidValue).toBool();
+            const bool isAcceptable = result == QValidator::Acceptable;
+
+            if (isInvalid && isAcceptable) {
+                model_.setData(index, false, WaypointTableRoles::InvalidValue);
+                wasDataValidated = true;
+            } else if (!isInvalid && !isAcceptable) {
+                model_.setData(index, true, WaypointTableRoles::InvalidValue);
+                wasDataInvalidated = true;
+            }
         }
     }
 
-    runValidDataCheck();
+    if (wasDataInvalidated)
+        setDataValiditity(false);
+    else if (wasDataValidated)
+        // If no data was invalidated and some data was validated
+        // we must check if the table is now valid
+        runValidDataCheck();
 }
 
 void WaypointTableWidget::runValidDataCheck()
 {
+    bool isDataValid = false;
+
     const int rowCount = model_.rowCount();
 
-    if (rowCount < 1)
-        return;
+    if (rowCount >= 1) {
+        for (int row = 0; row < rowCount; row++) {
 
-    for (int row = 0; row < rowCount; row++) {
-        for (int column = 0; column < 2; column++) {
-            QModelIndex index = model_.index(row, column);
+            bool isFirstColumnEmpty = false;
 
-            if (index.data(WaypointTableRoles::InvalidValue).toBool() ||
-                    index.data(Qt::EditRole).toString().isEmpty())
-                return;
+            for (int column = 0; column < 3; column++) {
+                QModelIndex index = model_.index(row, column);
 
+                if (column < 3) {
+                    const bool isInvalid = index.data(WaypointTableRoles::InvalidValue).toBool();
+
+                    if (isInvalid)
+                        goto end;
+                }
+
+                // Make sure all the columns in the row are in the same state
+                // either all filled or all empty - we ignore empty rows
+                const bool isCurrentColumnEmpty = index.data().toString().isEmpty();
+
+                if (column == 0)
+                    isFirstColumnEmpty = isCurrentColumnEmpty;
+                else if (isFirstColumnEmpty != isCurrentColumnEmpty)
+                    goto end;
+            }
         }
+
+        isDataValid = true;
     }
 
-    emit validDataAvailable(getCurrentData());
+    end:
+    setDataValiditity(isDataValid);
 }
