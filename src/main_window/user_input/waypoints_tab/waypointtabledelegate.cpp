@@ -94,7 +94,6 @@ void WaypointTableDelegate::initStyleOption(QStyleOptionViewItem *option,
     if (index.data(WaypointTableRoles::InvalidValue).toBool()) {
         option->backgroundBrush = invalidBrush_;
         option->palette.setBrush(QPalette::Highlight, invalidHighlightBrush_);
-        //option->palette.setBrush(QPalette::Text, QBrush(Qt::black));
         option->text = tr("Invalid: ") + option->text;
     } else {
         if (index.data().toString().isEmpty()) {

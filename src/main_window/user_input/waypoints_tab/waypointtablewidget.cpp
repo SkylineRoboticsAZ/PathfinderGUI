@@ -68,11 +68,19 @@ void WaypointTableWidget::setYRange(double bottom, double top)
     setRangeHelper(false, bottom, top);
 }
 
+void WaypointTableWidget::setCurrentData(const QVector<WaypointTableWidget::DataPoint> &data)
+{
+
+}
+
 QVector<WaypointTableWidget::DataPoint> WaypointTableWidget::getCurrentData() const
 {
-    QVector<DataPoint> dataPoints;
+    const int rowCount = model_.rowCount();
 
-    for (int row = 0; row < model_.rowCount(); row++) {
+    QVector<DataPoint> dataPoints;
+    dataPoints.reserve(rowCount);
+
+    for (int row = 0; row < rowCount; row++) {
         DataPoint point;
 
         point.x = model_.data(model_.index(row, 0)).toString();
@@ -93,7 +101,7 @@ bool WaypointTableWidget::isDataValid() const
 void WaypointTableWidget::dataChanged(const QModelIndex &topLeft,
                                       const QModelIndex &bottomRight,
                                       const QVector<int> &roles)
-{
+{    
     Q_UNUSED(bottomRight);
 
     if (roles.contains(Qt::EditRole)) {
